@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using StudentServiceGQL.DataService;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudentServiceGQL
 {
@@ -22,12 +24,24 @@ namespace StudentServiceGQL
         }
 
         public IConfiguration Configuration { get; }
+        readonly string CorsApi = "CorsApi";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
             services.AddControllers();
+
+            services.AddDbContext<StudentServiceContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name:CorsApi,
+                    builder => builder.WithOrigins("http://localhost:4200", "http://mywebsite.com")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentServiceGQL", Version = "v1" });
@@ -45,6 +59,8 @@ namespace StudentServiceGQL
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(CorsApi);
 
             app.UseRouting();
 
