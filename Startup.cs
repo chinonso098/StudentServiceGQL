@@ -10,9 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using StudentServiceGQL.DataService;
 using Microsoft.EntityFrameworkCore;
+using StudentServiceGQL.GraphQL;
+using GraphQL.Server.Ui.Voyager;
 
 namespace StudentServiceGQL
 {
@@ -24,28 +25,15 @@ namespace StudentServiceGQL
         }
 
         public IConfiguration Configuration { get; }
-        readonly string CorsApi = "CorsApi";
+        //readonly string CorsApi = "CorsApi";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddPooledDbContextFactory<StudentServiceContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
-            services.AddControllers();
-
-            services.AddDbContext<StudentServiceContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name:CorsApi,
-                    builder => builder.WithOrigins("http://localhost:4200", "http://mywebsite.com")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
-            });
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudentServiceGQL", Version = "v1" });
-            });
+            services.AddGraphQLServer().AddQueryType<Query>()
+                                        .AddProjections();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,22 +42,18 @@ namespace StudentServiceGQL
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "StudentServiceGQL v1"));
             }
-
-            app.UseHttpsRedirection();
-
-            app.UseCors(CorsApi);
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapGraphQL();
             });
+
+            app.UseGraphQLVoyager(new VoyagerOptions(){
+                GraphQLEndPoint = "/graphql"
+            },"/graphql-Ui");
         }
     }
 }
