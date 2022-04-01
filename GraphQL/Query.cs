@@ -1,5 +1,4 @@
 
-using System.Collections.Generic;
 using System.Linq;
 using HotChocolate;
 using HotChocolate.Data;
@@ -18,7 +17,7 @@ namespace StudentServiceGQL.GraphQL
         // }
         
         [UseDbContext(typeof(StudentServiceContext))]
-        [UseProjection]
+        //[UseProjection]
         public IQueryable<Student> GetStudents([ScopedService] StudentServiceContext dbContext){
             
             return dbContext.Students;
@@ -27,7 +26,7 @@ namespace StudentServiceGQL.GraphQL
 
   
         [UseDbContext(typeof(StudentServiceContext))]
-        [UseProjection]
+        //[UseProjection]
         public IQueryable<State> GetStates([ScopedService] StudentServiceContext dbContext){
             
             return dbContext.States;
@@ -35,7 +34,7 @@ namespace StudentServiceGQL.GraphQL
 
 
         [UseDbContext(typeof(StudentServiceContext))]
-        [UseProjection]
+       // [UseProjection]
         public IQueryable<Address> GetAddress([ScopedService] StudentServiceContext dbContext){
             
             return dbContext.Addresses;

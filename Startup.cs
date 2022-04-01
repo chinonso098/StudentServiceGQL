@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using StudentServiceGQL.DataService;
 using Microsoft.EntityFrameworkCore;
 using StudentServiceGQL.GraphQL;
+using StudentServiceGQL.GraphQL.Types;
 using GraphQL.Server.Ui.Voyager;
 
 namespace StudentServiceGQL
@@ -33,6 +34,8 @@ namespace StudentServiceGQL
             services.AddPooledDbContextFactory<StudentServiceContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
             services.AddGraphQLServer().AddQueryType<Query>()
+                                        .AddType<AddressType>()
+                                        .AddType<StudentType>()
                                         .AddProjections();
         }
 

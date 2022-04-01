@@ -31,12 +31,17 @@ namespace StudentServiceGQL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressID"), 1L, 1);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("bit");
 
                     b.Property<int>("StateID")
                         .HasColumnType("int");
 
                     b.Property<string>("StreetOne")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StreetTwo")
@@ -61,6 +66,7 @@ namespace StudentServiceGQL.Migrations
                         {
                             AddressID = 1,
                             City = "Polmero",
+                            IsPrimary = true,
                             StateID = 1,
                             StreetOne = "8564 Fresco Street",
                             StreetTwo = "",
@@ -69,13 +75,78 @@ namespace StudentServiceGQL.Migrations
                         },
                         new
                         {
+                            AddressID = 3,
+                            City = "Fishers",
+                            IsPrimary = false,
+                            StateID = 1,
+                            StreetOne = "2346 Venture Rd",
+                            StreetTwo = "",
+                            StudentID = 1,
+                            ZipCode = "96983"
+                        },
+                        new
+                        {
                             AddressID = 2,
                             City = "Nina",
+                            IsPrimary = true,
                             StateID = 2,
                             StreetOne = "9621 Pinta Lane",
                             StreetTwo = "",
                             StudentID = 2,
                             ZipCode = "52145"
+                        });
+                });
+
+            modelBuilder.Entity("StudentServiceGQL.DomainObjects.CollegeProgram", b =>
+                {
+                    b.Property<int>("CollegeProgramID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CollegeProgramID"), 1L, 1);
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ProgramName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("CollegeProgramID");
+
+                    b.ToTable("CollegePrograms");
+
+                    b.HasData(
+                        new
+                        {
+                            CollegeProgramID = 1,
+                            EndDate = new DateTime(2084, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProgramName = "Mathematics",
+                            StartDate = new DateTime(2020, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            CollegeProgramID = 2,
+                            EndDate = new DateTime(2084, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProgramName = "Physics",
+                            StartDate = new DateTime(2020, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            CollegeProgramID = 3,
+                            EndDate = new DateTime(2084, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProgramName = "Bio-Chemistry",
+                            StartDate = new DateTime(2020, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            CollegeProgramID = 4,
+                            EndDate = new DateTime(2084, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProgramName = "Geology",
+                            StartDate = new DateTime(2020, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -88,6 +159,10 @@ namespace StudentServiceGQL.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StateID"), 1L, 1);
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StateID");
@@ -98,12 +173,62 @@ namespace StudentServiceGQL.Migrations
                         new
                         {
                             StateID = 1,
-                            Name = "NY"
+                            Name = "New York",
+                            ShortName = "NY"
                         },
                         new
                         {
                             StateID = 2,
-                            Name = "CA"
+                            Name = "California",
+                            ShortName = "CA"
+                        },
+                        new
+                        {
+                            StateID = 3,
+                            Name = "Georgia",
+                            ShortName = "GA"
+                        },
+                        new
+                        {
+                            StateID = 4,
+                            Name = "North Dakota",
+                            ShortName = "ND"
+                        },
+                        new
+                        {
+                            StateID = 5,
+                            Name = "South Dakota",
+                            ShortName = "SD"
+                        },
+                        new
+                        {
+                            StateID = 6,
+                            Name = "North Carolina",
+                            ShortName = "NC"
+                        },
+                        new
+                        {
+                            StateID = 7,
+                            Name = "South Carolina",
+                            ShortName = "SC"
+                        },
+                        new
+                        {
+                            StateID = 8,
+                            Name = "Indiana",
+                            ShortName = "IN"
+                        },
+                        new
+                        {
+                            StateID = 9,
+                            Name = "Texas",
+                            ShortName = "TX"
+                        },
+                        new
+                        {
+                            StateID = 10,
+                            Name = "Illinois",
+                            ShortName = "IL"
                         });
                 });
 
@@ -121,6 +246,9 @@ namespace StudentServiceGQL.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
+                    b.Property<int>("CollegeProgramID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DoB")
                         .HasColumnType("datetime2");
 
@@ -128,18 +256,19 @@ namespace StudentServiceGQL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Program")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StudentNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StudentID");
+
+                    b.HasIndex("CollegeProgramID");
 
                     b.ToTable("Students");
 
@@ -149,10 +278,10 @@ namespace StudentServiceGQL.Migrations
                             StudentID = 1,
                             AdmissionDate = new DateTime(2020, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Age = 38,
+                            CollegeProgramID = 3,
                             DoB = new DateTime(1984, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Nicholas",
                             LastName = "Gunn",
-                            Program = "Music Studies",
                             StudentNumber = "9580389442"
                         },
                         new
@@ -160,10 +289,10 @@ namespace StudentServiceGQL.Migrations
                             StudentID = 2,
                             AdmissionDate = new DateTime(2021, 11, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Age = 42,
+                            CollegeProgramID = 2,
                             DoB = new DateTime(1979, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Charles",
                             LastName = "Freiderick",
-                            Program = "Something Something Science",
                             StudentNumber = "9580389442"
                         });
                 });
@@ -177,7 +306,7 @@ namespace StudentServiceGQL.Migrations
                         .IsRequired();
 
                     b.HasOne("StudentServiceGQL.DomainObjects.Student", "Student")
-                        .WithMany()
+                        .WithMany("Addresses")
                         .HasForeignKey("StudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -185,6 +314,22 @@ namespace StudentServiceGQL.Migrations
                     b.Navigation("State");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("StudentServiceGQL.DomainObjects.Student", b =>
+                {
+                    b.HasOne("StudentServiceGQL.DomainObjects.CollegeProgram", "CollegeProgram")
+                        .WithMany()
+                        .HasForeignKey("CollegeProgramID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CollegeProgram");
+                });
+
+            modelBuilder.Entity("StudentServiceGQL.DomainObjects.Student", b =>
+                {
+                    b.Navigation("Addresses");
                 });
 #pragma warning restore 612, 618
         }
