@@ -1,43 +1,19 @@
 
-using System.Linq;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using HotChocolate;
-using HotChocolate.Data;
-using StudentServiceGQL.DataService;
 using StudentServiceGQL.DomainObjects;
+using StudentServiceGQL.Repository;
 
 namespace StudentServiceGQL.GraphQL
 {
    public class Query
    {
-
-        // private readonly StudentServiceContext _dbContext;
-
-        // public Query(StudentServiceContext dbContext){
-        //     this._dbContext = dbContext;
-        // }
-        
-        [UseDbContext(typeof(StudentServiceContext))]
-        //[UseProjection]
-        public IQueryable<Student> GetStudents([ScopedService] StudentServiceContext dbContext){
-            
-            return dbContext.Students;
-        }
-
-
-  
-        [UseDbContext(typeof(StudentServiceContext))]
-        //[UseProjection]
-        public IQueryable<State> GetStates([ScopedService] StudentServiceContext dbContext){
-            
-            return dbContext.States;
-        }
-
-
-        [UseDbContext(typeof(StudentServiceContext))]
-       // [UseProjection]
-        public IQueryable<Address> GetAddress([ScopedService] StudentServiceContext dbContext){
-            
-            return dbContext.Addresses;
+        public async Task<IEnumerable<Student>> GetStudents([Service] IRepository<Student> studentRepository)
+        {
+            var res = await studentRepository.GetEntitiesAsync();
+            return res;
         }
 
     }

@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using StudentServiceGQL.DataService;
+using StudentServiceGQL.DomainObjects;
 using Microsoft.EntityFrameworkCore;
 using StudentServiceGQL.GraphQL;
 using StudentServiceGQL.GraphQL.Types;
+using StudentServiceGQL.Repository;
 using GraphQL.Server.Ui.Voyager;
 
 namespace StudentServiceGQL
@@ -33,10 +28,15 @@ namespace StudentServiceGQL
         {
             services.AddPooledDbContextFactory<StudentServiceContext>(opt => opt.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
 
+            services.AddScoped<IRepository<Student>, StudentRepository>();
+            services.AddScoped<IRepository<Address>, AddressRepository>();
+            services.AddScoped<IRepository<CollegeProgram>, CollegeProgramRepository>();
+
+            
             services.AddGraphQLServer().AddQueryType<Query>()
-                                        .AddType<AddressType>()
-                                        .AddType<StudentType>()
-                                        .AddProjections();
+                                       // .AddType<AddressType>()
+                                         .AddType<StudentType>();
+            //                             .AddProjections();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
